@@ -1,25 +1,18 @@
 import requests
 import time
 import os
-from bs4 import BeautifulSoup
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 
-URL = "https://goldliveksa.com/gold-prices-iraq"  # صفحة بها السعر المحلي
-
-def get_gold_price_iraq():
+def get_gold_price():
     try:
-        page = requests.get(URL)
-        soup = BeautifulSoup(page.text, "html.parser")
-        
-        # استخراج سعر الجرام عيار 21 من الصفحة
-        price_tag = soup.find("td", text="عيار 21").find_next_sibling("td")
-        price_iqd = price_tag.text.strip().replace(",", "").split()[0]
-        
-        return int(price_iqd)
-    except Exception as e:
-        print("Error:", e)
+        url = "https://api.gold-api.com/price/XAU"
+        response = requests.get(url)
+        data = response.json()
+        price = data["price"]
+        return price
+    except:
         return None
 
 def send_telegram_message(message):
@@ -31,13 +24,12 @@ def send_telegram_message(message):
     requests.post(url, data=data)
 
 while True:
-    price = get_gold_price_iraq()
+    price = get_gold_price()
     
     if price:
-        message = f"💰 سعر الذهب في العراق الآن:\n📊 1 غرام عيار 21 ≈ {price:,} د.ع"
+        message = f"💰 سعر الذهب الآن:\n{price} دولار للأونصة"
     else:
-        message = "❌ فشل في جلب سعر الذهب من المصدر المحلي"
-    
+        message = "❌ فشل في جلب السعر"
+
     send_telegram_message(message)
-    
     time.sleep(60)
