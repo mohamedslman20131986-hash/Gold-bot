@@ -7,10 +7,10 @@ CHANNEL_ID = os.getenv("CHANNEL_ID")
 
 def get_gold_price():
     try:
-        url = "https://api.metals.live/v1/spot/gold"
+        url = "https://api.gold-api.com/price/XAU"
         response = requests.get(url)
         data = response.json()
-        price = data[0]["price"]
+        price = data["price"]
         return price
     except:
         return None
