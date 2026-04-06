@@ -14,9 +14,7 @@ def get_gold_price():
         data = response.json()
         ounce_price = data["price"]
 
-        # تحويل الى غرام
         gram_price_usd = ounce_price / 31.1035
-
         return gram_price_usd
     except:
         return None
@@ -33,12 +31,8 @@ while True:
     price = get_gold_price()
     
     if price:
-        global last_price
-        
-        # تحويل للعراقي (تقريباً 1300 دينار لكل دولار)
         price_iq = price * 1300
 
-        # تحديد الاتجاه
         if last_price is None:
             trend = "➖ أول تحديث"
         elif price > last_price:
@@ -48,7 +42,6 @@ while True:
         else:
             trend = "⏸️ ثابت"
 
-        # منع التكرار
         if price != last_price:
             message = f"""💰 سعر الذهب الآن:
 
